@@ -30,7 +30,7 @@ DataGent is an intelligent data analysis application powered by AI models. It pr
    pip install -r requirements.txt
    ```
 
-4. Create a `.env` file in the root directory and add your API keys:
+4. Rename `.env example` to Create a `.env` file in the root directory and add your API keys:
    ```
    GROQ_API_KEY=your_groq_api_key_here
    ```
@@ -74,7 +74,7 @@ DataGent is an intelligent data analysis application powered by AI models. It pr
 ### AI Models
 DataGent supports two types of AI models:
 1. **ChatGroq (Cloud)**: Requires a GROQ_API_KEY in the .env file
-2. **LocalLLM**: Requires a local Ollama server running with the qwen2.5-coder model
+2. **LocalLLM**: Requires a local Ollama server running with the qwen2.5-coder model or any other open-source model of your choice
 
 To use the local model:
 1. Install Ollama: https://ollama.com/
