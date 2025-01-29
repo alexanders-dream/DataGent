@@ -77,7 +77,7 @@ DataGent supports two types of AI models:
 2. **LocalLLM**: Requires a local Ollama server running with the qwen2.5-coder model
 
 To use the local model:
-1. Install Ollama: https://ollama.ai/
+1. Install Ollama: https://ollama.com/
 2. Pull the model:
    ```bash
    ollama pull qwen2.5-coder
