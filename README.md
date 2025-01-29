@@ -15,7 +15,7 @@ DataGent is an intelligent data analysis application powered by AI models. It pr
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/datagent.git
+   git clone https://github.com/alexanders-dream/DataGent.git
    cd datagent
    ```
 
