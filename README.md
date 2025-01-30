@@ -11,6 +11,28 @@ DataGent is an intelligent data analysis application powered by AI models. It pr
 - **Interactive Filtering**: Filter and explore data interactively
 - **Sentiment Analysis**: Analyze text data for sentiment (if applicable)
 
+## Configuration
+
+### AI Models
+DataGent supports two types of AI models:
+1. **Groq (Cloud)**: Requires a GROQ_API_KEY in the .env file
+2. **LocalLLM**: Requires a local Ollama server running with the qwen2.5-coder model or any other open-source model of your choice
+
+To use open-source models from Groq:
+1. Visit https://console.groq.com/keys and generate an API key
+2. Copy the generated API key. (You'll need it later)
+
+To use the local model:
+1. Install Ollama: https://ollama.com/
+2. Pull the model:
+   ```bash
+   ollama pull qwen2.5-coder
+   ```
+3. Start the Ollama server:
+   ```bash
+   ollama serve
+   ```
+
 ## Installation
 
 1. Clone the repository:
@@ -68,24 +90,6 @@ DataGent is an intelligent data analysis application powered by AI models. It pr
    - Choose between Cloud (ChatGroq) or Local AI models
    - End the current session
    - View information about the current AI model
-
-## Configuration
-
-### AI Models
-DataGent supports two types of AI models:
-1. **ChatGroq (Cloud)**: Requires a GROQ_API_KEY in the .env file
-2. **LocalLLM**: Requires a local Ollama server running with the qwen2.5-coder model or any other open-source model of your choice
-
-To use the local model:
-1. Install Ollama: https://ollama.com/
-2. Pull the model:
-   ```bash
-   ollama pull qwen2.5-coder
-   ```
-3. Start the Ollama server:
-   ```bash
-   ollama serve
-   ```
 
 ## Requirements
 
