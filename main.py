@@ -58,6 +58,7 @@ DATA_ANALYSIS_PROMPT = ChatPromptTemplate.from_template(
 
 # Function to restart the session
 def restart_session():
+    st.session_state.api_key = ""
     st.session_state.clear()
     st.rerun()
 
@@ -101,32 +102,35 @@ api_endpoint = st.sidebar.text_input(
 )
 
 if provider == "Groq":
-    api_key = st.sidebar.text_input(
+    if "api_key" not in st.session_state:
+        st.session_state.api_key = ""
+
+    st.session_state.api_key = st.sidebar.text_input(
         "Groq API Key:",
-        value=os.getenv("GROQ_API_KEY", ""),
+        value=st.session_state.api_key,
         type="password",
         help="Required for Groq - securely stored in session",
         placeholder="Enter your Groq API key"
     )
     
-    if api_key:
+    if st.session_state.api_key :
         # Set the API key in the environment variable
-        os.environ["GROQ_API_KEY"] = api_key
+        os.environ["GROQ_API_KEY"] = st.session_state.api_key 
     else:
         st.sidebar.markdown("[Get Groq API Key](https://console.groq.com/keys)")
         st.sidebar.error("GROQ_API_KEY is required for Groq provider")
         provider = "Ollama"
-        api_key = ""
+        st.session_state.api_key = ""
 else:
-    api_key = ""
+    st.session_state.api_key  = ""
 
 # Check if models need to be fetched
 if not st.session_state.models or 'selected_model_index' not in st.session_state:
     if api_endpoint:
-        if provider == "Groq" and api_key:
-            models = fetch_available_models(provider, api_endpoint, api_key)
+        if provider == "Groq" and st.session_state.api_key :
+            models = fetch_available_models(provider, api_endpoint, st.session_state.api_key )
         else:
-            models = fetch_available_models(provider, api_endpoint, api_key)
+            models = fetch_available_models(provider, api_endpoint, st.session_state.api_key )
         if models:
             st.session_state.models = models
         else:
@@ -152,10 +156,10 @@ with col2:
     st.markdown("<div style='margin-top: 0.5em;'>", unsafe_allow_html=True)
     if st.button("🔄", help="Check available models"):
         if api_endpoint:
-            if provider == "Groq" and api_key:
-                models = fetch_available_models(provider, api_endpoint, api_key)
+            if provider == "Groq" and st.session_state.api_key :
+                models = fetch_available_models(provider, api_endpoint, st.session_state.api_key )
             else:
-                models = fetch_available_models(provider, api_endpoint, api_key)
+                models = fetch_available_models(provider, api_endpoint, st.session_state.api_key )
             if models:
                 st.session_state.models = models
                 st.sidebar.success("Models updated successfully!", icon="✅")
@@ -168,7 +172,7 @@ with col2:
 # Initialize selected model
 if selected_model:
     if provider == "Groq":
-        model = ChatGroq(temperature=0, model_name=selected_model, api_key=api_key)
+        model = ChatGroq(temperature=0, model_name=selected_model, api_key=st.session_state.api_key)
     else:  # Ollama
         model = LocalLLM(api_base=api_endpoint, model=selected_model)
 else:
