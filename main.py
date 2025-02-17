@@ -116,8 +116,8 @@ if provider == "Groq":
     if not api_key:
         st.sidebar.markdown("[Get Groq API Key](https://console.groq.com/keys)")
         st.sidebar.error("GROQ_API_KEY is required for Groq provider")
-        provider = "Ollama"
-        api_key = ""
+        #provider = "Ollama"
+        #api_key = ""
 else:
     api_key = ""
 
