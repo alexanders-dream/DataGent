@@ -51,7 +51,7 @@ def fetch_available_models(provider, api_endpoint, api_key):
             return [model['name'] for model in response.json().get('models', [])]
         
     except Exception as e:
-        st.error(f"Error fetching models: {str(e)}")
+        st.sidebar.error(f"Error fetching models: {str(e)}")
         return None
 
 # Create prompt template
