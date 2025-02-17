@@ -14,6 +14,16 @@ from sentiment_analysis import sentiment_analysis_section
 from pandasai import Agent
 from pandasai.llm.local_llm import LocalLLM
 
+page_bg_img = """
+<style>
+[data-testid="stAppViewContainer"]{{
+background-color: #e5e5f7;
+opacity: 0.8;
+}}
+</style>
+"""
+st.markdown(page_bg_img, unsafe_allow_html=True)
+
 def fetch_available_models(provider, api_endpoint, api_key):
     """Fetch available models from the selected provider's API endpoint"""
     try:
@@ -56,8 +66,11 @@ def restart_session():
     st.rerun()
 
 # Page title and sidebar title
+ICON_LOGO = "images/logo.png"
+
+st.sidebar.image(ICON_LOGO, width=300) 
 st.title("DataGent : a Data Analysis AI Agent")
-st.sidebar.title("DataGent AI")
+#st.sidebar.title("DataGent AI")
 
 # File upload function
 uploaded_file = st.sidebar.file_uploader("Upload a CSV file", type=["csv"])
@@ -170,6 +183,16 @@ if model:
 # End session button
 if st.sidebar.button("End Session"):
     restart_session()
+
+st.sidebar.markdown(
+                    """<div style="text-align: center; margin-top: 20px;">
+                        <a href="https://buymeacoffee.com/oguso">
+                            <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="width: 150px; height: auto;">
+                        </a>
+                        <p style="color: #666; margin-top: 5px;">Support my work!</p>
+                    </div>
+                    """, unsafe_allow_html=True
+                    )
 
 if uploaded_file is not None:
     # Read uploaded file
