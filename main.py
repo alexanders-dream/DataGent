@@ -113,6 +113,7 @@ if provider == "Groq":
         # Set the API key in the environment variable
         os.environ["GROQ_API_KEY"] = api_key
     else:
+        st.sidebar.markdown("[Get Groq API Key](https://console.groq.com/keys)")
         st.sidebar.error("GROQ_API_KEY is required for Groq provider")
         provider = "Ollama"
         api_key = ""
