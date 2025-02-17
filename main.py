@@ -19,7 +19,6 @@ st.set_page_config(
     page_icon="images/icon.png"
 )
 
-
 def fetch_available_models(provider, api_endpoint, api_key):
     """Fetch available models from the selected provider's API endpoint"""
     try:
@@ -70,7 +69,7 @@ st.title("DataGent : a Data Analysis AI Agent")
 #st.sidebar.title("DataGent AI")
 
 # File upload function
-uploaded_file = st.sidebar.file_uploader("Upload a CSV file", type=["csv"])
+uploaded_file = st.sidebar.file_uploader("Upload a CSV file", type=["csv", "xls", "xlsx"])
 
 # Model Selection Section in Sidebar
 st.sidebar.header("AI Model Configuration")
@@ -104,7 +103,7 @@ api_endpoint = st.sidebar.text_input(
 if provider == "Groq":
     api_key = st.sidebar.text_input(
         "Groq API Key:",
-        #value=os.getenv("GROQ_API_KEY", ""),
+        value=os.getenv("GROQ_API_KEY", ""),
         type="password",
         help="Required for Groq - securely stored in session",
         placeholder="Enter your Groq API key"
@@ -193,7 +192,18 @@ st.sidebar.markdown(
 
 if uploaded_file is not None:
     # Read uploaded file
-    data = pd.read_csv(uploaded_file)
+    file_type = uploaded_file.name.split('.')[-1]
+    
+    if file_type == 'csv':
+        # Read the CSV file
+        data = pd.read_csv(uploaded_file)
+        st.info("Reading CSV file...")
+    elif file_type in ['xls', 'xlsx']:
+        # Read the Excel file
+        data = pd.read_excel(uploaded_file)
+        st.info(f"Reading Excel file ({file_type.upper()})...")
+    else:
+        st.error("Unsupported file type. Please upload a CSV or Excel file.")
     
     # Data Preview
     st.subheader("Data Preview")
@@ -223,4 +233,4 @@ if uploaded_file is not None:
         sentiment_analysis_section(data)
 
 else:
-    st.write("Please upload a CSV file to get started.")
+    st.write("Please upload a CSV/Excel file to get started.")
