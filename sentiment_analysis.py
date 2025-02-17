@@ -16,7 +16,7 @@ from nltk.stem import WordNetLemmatizer
 nltk.download('vader_lexicon')
 nltk.download('stopwords')
 nltk.download('wordnet')
-nltk.download('punkt')
+nltk.download('punkt_tab')
 
 def text_preprocessing(text):
     """Preprocess text for sentiment analysis."""
