@@ -235,4 +235,4 @@ if uploaded_file is not None:
         sentiment_analysis_section(data)
 
 else:
-    st.write("Please upload a CSV/Excel file to get started.")
+    st.write("Please upload a CSV or Excel file to get started.")
