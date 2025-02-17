@@ -103,17 +103,19 @@ api_endpoint = st.sidebar.text_input(
 if provider == "Groq":
     api_key = st.sidebar.text_input(
         "Groq API Key:",
-        #value=os.getenv("GROQ_API_KEY", ""),
+        value=os.getenv("GROQ_API_KEY", ""),
         type="password",
         help="Required for Groq - securely stored in session",
         placeholder="Enter your Groq API key"
     )
     
-    if not api_key:
-        st.sidebar.markdown("[Get Groq API Key](https://console.groq.com/keys)")
+    if api_key:
+        # Set the API key in the environment variable
+        os.environ["GROQ_API_KEY"] = api_key
+    else:
         st.sidebar.error("GROQ_API_KEY is required for Groq provider")
-        #provider = "Ollama"
-        #api_key = ""
+        provider = "Ollama"
+        api_key = ""
 else:
     api_key = ""
 
@@ -165,7 +167,7 @@ with col2:
 # Initialize selected model
 if selected_model:
     if provider == "Groq":
-        model = ChatGroq(temperature=0, model_name=selected_model)
+        model = ChatGroq(temperature=0, model_name=selected_model, api_key=api_key)
     else:  # Ollama
         model = LocalLLM(api_base=api_endpoint, model=selected_model)
 else:
