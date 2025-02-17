@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import os
+import requests
 from langchain_groq.chat_models import ChatGroq
 from langchain.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
@@ -13,11 +14,42 @@ from sentiment_analysis import sentiment_analysis_section
 from pandasai import Agent
 from pandasai.llm.local_llm import LocalLLM
 
+def fetch_available_models(provider, api_endpoint, api_key):
+    """Fetch available models from the selected provider's API endpoint"""
+    try:
+        if provider == "Groq":
+            endpoint = f"{api_endpoint.rstrip('/')}/models"
+            headers = {
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json"
+            }
+        else:  # Ollama
+            endpoint = f"{api_endpoint.rstrip('/')}/api/tags"
+            headers = {"Content-Type": "application/json"}
+
+        response = requests.get(
+            endpoint,
+            headers=headers,
+            timeout=10
+        )
+        response.raise_for_status()
+        
+        # Handle different response formats
+        if provider == "Groq":
+            return [model['id'] for model in response.json().get('data', [])]
+        else:  # Ollama
+            return [model['name'] for model in response.json().get('models', [])]
+        
+    except Exception as e:
+        st.error(f"Error fetching models: {str(e)}")
+        return None
+
 # Create prompt template
 DATA_ANALYSIS_PROMPT = ChatPromptTemplate.from_template(
     "You are a data analysis assistant. Only answer questions related to the uploaded data. "
     "If asked about anything else, respond with: 'I can only answer questions about the uploaded data.' "
 )
+
 # Function to restart the session
 def restart_session():
     st.session_state.clear()
@@ -30,31 +62,112 @@ st.sidebar.title("DataGent AI")
 # File upload function
 uploaded_file = st.sidebar.file_uploader("Upload a CSV file", type=["csv"])
 
-#Model
-st.sidebar.title("AI Model Configuration")
-model_choice = st.sidebar.radio(
-    "Choose AI Model",
-    options=["Groq (Cloud)", "Ollama/LocalLLM"],
-    index=0 if os.getenv("GROQ_API_KEY") else 1
+# Model Selection Section in Sidebar
+st.sidebar.header("AI Model Configuration")
+
+# Initialize session state for models and selected model index
+if 'models' not in st.session_state:
+    st.session_state.models = []
+if 'selected_model_index' not in st.session_state:
+    st.session_state.selected_model_index = 0
+
+# Provider Selection
+provider = st.sidebar.selectbox(
+    "Select AI Provider:",
+    options=["Groq", "Ollama"],
+    index=0,
+    help="Choose between Groq cloud or local Ollama service"
 )
 
-# Initialize selected model
-if model_choice == "ChatGroq (Cloud)":
-    if not os.getenv("GROQ_API_KEY"):
-        st.sidebar.error("GROQ_API_KEY not found in .env file")
-        model = LocalLLM(api_base="http://localhost:11434/v1", model="qwen2.5-coder")
-    else:
-        model = ChatGroq(temperature=0, model_name="gemma2-9b-it")
+# API Configuration
+if provider == "Groq":
+    default_endpoint = "https://api.groq.com/openai/v1"
+else:  # Ollama
+    default_endpoint = "http://localhost:11434"
+
+api_endpoint = st.sidebar.text_input(
+    "API Endpoint:",
+    value=default_endpoint,
+    help="Edit the API endpoint if needed"
+)
+
+if provider == "Groq":
+    api_key = st.sidebar.text_input(
+        "Groq API Key:",
+        value=os.getenv("GROQ_API_KEY", ""),
+        type="password",
+        help="Required for Groq - securely stored in session",
+        placeholder="Enter your Groq API key"
+    )
+    
+    if not api_key:
+        st.sidebar.markdown("[Get Groq API Key](https://console.groq.com/keys)")
+        st.sidebar.error("GROQ_API_KEY is required for Groq provider")
+        provider = "Ollama"
+        api_key = ""
 else:
-    model = LocalLLM(api_base="http://localhost:11434/v1", model="qwen2.5-coder")
+    api_key = ""
+
+# Check if models need to be fetched
+if not st.session_state.models or 'selected_model_index' not in st.session_state:
+    if api_endpoint:
+        if provider == "Groq" and api_key:
+            models = fetch_available_models(provider, api_endpoint, api_key)
+        else:
+            models = fetch_available_models(provider, api_endpoint, api_key)
+        if models:
+            st.session_state.models = models
+        else:
+            st.sidebar.error("No models available - check connection and refresh")
+
+# Model Selection with Refresh Button
+col1, col2 = st.sidebar.columns([4, 1])
+with col1:
+    if st.session_state.models:
+        selected_model = st.selectbox(
+            "Select AI Model:",
+            options=st.session_state.models,
+            index=st.session_state.selected_model_index,
+            on_change=None,
+            help="Choose from available AI models"
+        )
+        st.session_state.selected_model_index = st.session_state.models.index(selected_model)
+    else:
+        selected_model = None
+        st.error("No models available - check connection and refresh")
+with col2:
+    st.markdown("<style>div.stButton > button {padding: 0.25em 0.5em; font-size: 0.8em;}</style>", unsafe_allow_html=True)
+    st.markdown("<div style='margin-top: 0.5em;'>", unsafe_allow_html=True)
+    if st.button("🔄", help="Check available models"):
+        if api_endpoint:
+            if provider == "Groq" and api_key:
+                models = fetch_available_models(provider, api_endpoint, api_key)
+            else:
+                models = fetch_available_models(provider, api_endpoint, api_key)
+            if models:
+                st.session_state.models = models
+                st.sidebar.success("Models updated successfully!", icon="✅")
+            else:
+                st.sidebar.error("Failed to fetch models", icon="❗")
+        else:
+            st.sidebar.warning("Please provide a valid API endpoint", icon="⚠")
+    st.markdown("</div>", unsafe_allow_html=True)
+
+# Initialize selected model
+if selected_model:
+    if provider == "Groq":
+        model = ChatGroq(temperature=0, model_name=selected_model)
+    else:  # Ollama
+        model = LocalLLM(api_base=api_endpoint, model=selected_model)
+else:
+    model = None
+    st.sidebar.error("Please select a valid model")
 
 # Show current model info
-st.sidebar.info(f"Using: {model_choice}")
+if model:
+    st.sidebar.info(f"Using: {provider} - {selected_model}")
 
-# Setup for local AI model of choice
-# model = LocalLLM(api_base="http://localhost:11434/v1", model="qwen2.5-coder")
-
-#End session button
+# End session button
 if st.sidebar.button("End Session"):
     restart_session()
 
@@ -67,7 +180,7 @@ if uploaded_file is not None:
     st.write(data.head())
 
     # Create tabs for different sections
-    tab1, tab2, tab3, tab4, tab5, tab6= st.tabs(["Data Cleaning", "Data Visualization", 
+    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Data Cleaning", "Data Visualization", 
                                           "Data Querying with AI", "Advanced Querying", 
                                           "Interactive Data Filtering", "Sentiment Analysis"])
 
@@ -88,7 +201,6 @@ if uploaded_file is not None:
     
     with tab6:
         sentiment_analysis_section(data)
-
 
 else:
     st.write("Please upload a CSV file to get started.")
