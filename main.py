@@ -14,15 +14,11 @@ from sentiment_analysis import sentiment_analysis_section
 from pandasai import Agent
 from pandasai.llm.local_llm import LocalLLM
 
-page_bg_img = """
-<style>
-[data-testid="stAppViewContainer"]{{
-background-color: #e5e5f7;
-opacity: 0.8;
-}}
-</style>
-"""
-st.markdown(page_bg_img, unsafe_allow_html=True)
+st.set_page_config(
+    page_title="DataGent",
+    page_icon="images/icon.png"
+)
+
 
 def fetch_available_models(provider, api_endpoint, api_key):
     """Fetch available models from the selected provider's API endpoint"""
@@ -52,6 +48,7 @@ def fetch_available_models(provider, api_endpoint, api_key):
         
     except Exception as e:
         st.sidebar.error(f"Error fetching models: {str(e)}")
+        st.sidebar.warning(f"By default, Ollama binds to 127.0. 0.1 , which restricts access to local connections only. To allow external access, you must set the OLLAMA_HOST variable to 0.0. 0.0 , enabling the server to accept connections from any IP address.")
         return None
 
 # Create prompt template
