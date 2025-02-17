@@ -107,7 +107,7 @@ api_endpoint = st.sidebar.text_input(
 if provider == "Groq":
     api_key = st.sidebar.text_input(
         "Groq API Key:",
-        value=os.getenv("GROQ_API_KEY", ""),
+        #value=os.getenv("GROQ_API_KEY", ""),
         type="password",
         help="Required for Groq - securely stored in session",
         placeholder="Enter your Groq API key"
