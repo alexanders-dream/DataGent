@@ -56,25 +56,8 @@ To use the local model:
    ```bash
    pip install -r requirements.txt
    ```
-
-4. Rename `.env example` to Create a `.env` file in the root directory and add your API keys:
-   ```
-   GROQ_API_KEY=your_groq_api_key_here
-   ```
-
-5. Open `main.py` Add the name of the ai models you want to use (Line 42).
-   ```
-   if model_choice == "ChatGroq (Cloud)":
-    if not os.getenv("GROQ_API_KEY"):
-        st.sidebar.error("GROQ_API_KEY not found in .env file")
-        model = LocalLLM(api_base="http://localhost:11434/v1", model="qwen2.5-coder")
-    else:
-        model = ChatGroq(temperature=0, model_name="gemma2-9b-it")
-   else:
-      model = LocalLLM(api_base="http://localhost:11434/v1", model="qwen2.5-coder")
-   ```
-
-6. Run the application:
+   
+4. Run the application:
    ```bash
    streamlit run main.py
    ```
