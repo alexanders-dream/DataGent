@@ -1,3 +1,7 @@
+## Demo
+
+You can demo the app here: [DataGent Demo](https://datagent.streamlit.app)
+
 # DataGent - AI-Powered Data Analysis Assistant
 
 DataGent is an intelligent data analysis application powered by AI models. It provides a user-friendly interface for performing various data analysis tasks on CSV and Excel files, including data cleaning, visualization, querying, filtering, and sentiment analysis.
@@ -10,6 +14,7 @@ DataGent is an intelligent data analysis application powered by AI models. It pr
 - **Advanced Querying**: Perform complex data analysis with AI assistance
 - **Interactive Filtering**: Filter and explore data interactively
 - **Sentiment Analysis**: Analyze text data for sentiment (if applicable)
+
 
 ## Configuration
 
@@ -107,3 +112,4 @@ Contributions are welcome! Please open an issue or submit a pull request for any
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+

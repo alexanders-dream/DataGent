@@ -151,6 +151,7 @@ with col1:
     else:
         selected_model = None
         st.error("No models available - check connection and refresh")
+        st.sidebar.markdown("[Download Ollama](https://ollama.com/)")
 with col2:
     st.markdown("<style>div.stButton > button {padding: 0.25em 0.5em; font-size: 0.8em;}</style>", unsafe_allow_html=True)
     st.markdown("<div style='margin-top: 0.5em;'>", unsafe_allow_html=True)
