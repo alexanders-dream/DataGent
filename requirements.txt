@@ -1,4 +1,4 @@
-streamlit==1.37.0
+streamlit
 pandas==1.5.3
 pandasai==2.2.12
 matplotlib==3.8.1

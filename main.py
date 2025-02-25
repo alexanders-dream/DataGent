@@ -69,17 +69,6 @@ st.sidebar.image(ICON_LOGO, width=300)
 st.title("DataGent : a Data Analysis AI Agent")
 #st.sidebar.title("DataGent AI")
 
-#ProductHunt embed
-st.sidebar.markdown(
-                    """<div style="text-align: left; margin-top: 20px;">
-                        <a href="https://www.producthunt.com/posts/datagent?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-datagent" target="_blank">
-                            <img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=909266&theme=light&t=1740388574757" alt="DataGent - Data&#0032;Analysis&#0032;made&#0032;easy&#0046;&#0032;A&#0032;Data&#0032;Analysis&#0032;AI&#0032;Agent | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" />
-                        </a>
-                        <p style="color: #FFF; margin-top: 5px;">Vote for DataGent!</p>
-                    </div>
-                    """, unsafe_allow_html=True
-                    )
-
 # File upload function
 uploaded_file = st.sidebar.file_uploader("Upload a CSV file", type=["csv", "xls", "xlsx"])
 
@@ -199,6 +188,18 @@ if model:
 if st.sidebar.button("End Session"):
     restart_session()
 
+#ProductHunt embed
+st.sidebar.markdown(
+                    """<div style="text-align: left; margin-top: 20px;">
+                        <a href="https://www.producthunt.com/posts/datagent?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-datagent" target="_blank">
+                            <img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=909266&theme=light&t=1740388574757" alt="DataGent - Data&#0032;Analysis&#0032;made&#0032;easy&#0046;&#0032;A&#0032;Data&#0032;Analysis&#0032;AI&#0032;Agent | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" />
+                        </a>
+                        <p style="color: #FFF; margin-top: 5px;">Vote for DataGent!</p>
+                    </div>
+                    """, unsafe_allow_html=True
+                    )
+
+#Buy me a Coffee embed
 st.sidebar.markdown(
                     """<div style="text-align: center; margin-top: 20px;">
                         <a href="https://buymeacoffee.com/oguso">
