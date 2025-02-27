@@ -6,7 +6,7 @@ seaborn==0.13.1
 plotly==5.24.1
 Pillow==10.4.0
 langchain_groq==0.1.10
-langchain==0.2.1
+langchain==
 nltk==3.9.1
 wordcloud==1.9.4
 python-dotenv
