@@ -69,8 +69,7 @@ st.sidebar.image(ICON_LOGO, width=300)
 st.title("DataGent : a Data Analysis AI Agent")
 #st.sidebar.title("DataGent AI")
 
-#ProductHunt embed
-# Combined ProductHunt embeds in a flex container
+# Combined ProductHunt and Google Form embeds in a flex container
 st.markdown(
     
     """<div style="display: flex; flex-direction: row; gap: 20px; margin-top: 20px;">
@@ -78,7 +77,7 @@ st.markdown(
             <a href="https://www.producthunt.com/posts/datagent?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-datagent" target="_blank">
                 <img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=909266&theme=light&t=1740388574757" alt="DataGent - Data&#0032;Analysis&#0032;made&#0032;easy&#0046;&#0032;A&#0032;Data&#0032;Analysis&#0032;AI&#0032;Agent | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" />
             </a>
-            <p style="color: #FFF; margin-top: 5px;">Vote for DataGent!</p>
+            <p style="color: #33353d; font-weight: 600; margin-top: 5px;">Vote for DataGent!</p>
         </div>
         <div>
             <a href="https://docs.google.com/forms/d/e/1FAIpQLScZFxCR5jMSWUGU-WW1eSuQKuvjR6pI8YWvUIe85ozXGl9ysA/viewform?usp=header" target="_blank">
@@ -86,7 +85,7 @@ st.markdown(
                     <span style="color: white; font-weight: 600; font-size: 16px;">📝 Share Feedback</span>
                 </div>
             </a>
-            <p style="color: #FFF; margin-top: 5px;">We value your input!</p>
+            <p style="color: #33353d; font-weight: 600; margin-top: 5px;">We value your input!</p>
         </div>
        </div>
     """, 
