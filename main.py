@@ -69,6 +69,29 @@ st.sidebar.image(ICON_LOGO, width=300)
 st.title("DataGent : a Data Analysis AI Agent")
 #st.sidebar.title("DataGent AI")
 
+#ProductHunt embed
+# Combined ProductHunt embeds in a flex container
+st.markdown(
+    
+    """<div style="display: flex; flex-direction: row; gap: 20px; margin-top: 20px;">
+        <div>
+            <a href="https://www.producthunt.com/posts/datagent?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-datagent" target="_blank">
+                <img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=909266&theme=light&t=1740388574757" alt="DataGent - Data&#0032;Analysis&#0032;made&#0032;easy&#0046;&#0032;A&#0032;Data&#0032;Analysis&#0032;AI&#0032;Agent | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" />
+            </a>
+            <p style="color: #FFF; margin-top: 5px;">Vote for DataGent!</p>
+        </div>
+        <div>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLScZFxCR5jMSWUGU-WW1eSuQKuvjR6pI8YWvUIe85ozXGl9ysA/viewform?usp=header" target="_blank">
+                <div style="background-color: #33353d; padding: 15px 30px; border-radius: 8px; text-align: center; width: 250px; height: 54px; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                    <span style="color: white; font-weight: 600; font-size: 16px;">📝 Share Feedback</span>
+                </div>
+            </a>
+            <p style="color: #FFF; margin-top: 5px;">We value your input!</p>
+        </div>
+       </div>
+    """, 
+    unsafe_allow_html=True
+)
 # File upload function
 uploaded_file = st.sidebar.file_uploader("Upload a CSV file", type=["csv", "xls", "xlsx"])
 
@@ -188,18 +211,6 @@ if model:
 if st.sidebar.button("End Session"):
     restart_session()
 
-#ProductHunt embed
-st.sidebar.markdown(
-                    """<div style="text-align: left; margin-top: 20px;">
-                        <a href="https://www.producthunt.com/posts/datagent?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-datagent" target="_blank">
-                            <img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=909266&theme=light&t=1740388574757" alt="DataGent - Data&#0032;Analysis&#0032;made&#0032;easy&#0046;&#0032;A&#0032;Data&#0032;Analysis&#0032;AI&#0032;Agent | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" />
-                        </a>
-                        <p style="color: #FFF; margin-top: 5px;">Vote for DataGent!</p>
-                    </div>
-                    """, unsafe_allow_html=True
-                    )
-
-#Buy me a Coffee embed
 st.sidebar.markdown(
                     """<div style="text-align: center; margin-top: 20px;">
                         <a href="https://buymeacoffee.com/oguso">
@@ -219,11 +230,11 @@ if uploaded_file is not None:
     if file_type == 'csv':
         # Read the CSV file
         data = pd.read_csv(uploaded_file)
-        st.info("Reading CSV file...")
+        #st.info("Reading CSV file...")
     elif file_type in ['xls', 'xlsx']:
         # Read the Excel file
         data = pd.read_excel(uploaded_file)
-        st.info(f"Reading Excel file ({file_type.upper()})...")
+        #st.info(f"Reading Excel file ({file_type.upper()})...")
     else:
         st.error("Unsupported file type. Please upload a CSV or Excel file.")
     
