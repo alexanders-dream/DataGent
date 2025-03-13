@@ -72,7 +72,7 @@ st.title("DataGent : a Data Analysis AI Agent")
 # Combined ProductHunt and Google Form embeds in a flex container
 st.markdown(
     
-    """<div style="display: flex; flex-direction: row; gap: 20px; margin-top: 20px;">
+    """<div style="display: flex; flex-direction: row; gap: 20px; margin-top: 20px; text-align: center;">
         <div>
             <a href="https://www.producthunt.com/posts/datagent?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-datagent" target="_blank">
                 <img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=909266&theme=light&t=1740388574757" alt="DataGent - Data&#0032;Analysis&#0032;made&#0032;easy&#0046;&#0032;A&#0032;Data&#0032;Analysis&#0032;AI&#0032;Agent | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" />
@@ -91,6 +91,32 @@ st.markdown(
     """, 
     unsafe_allow_html=True
 )
+
+#Sidebar extra features
+with st.sidebar.expander("Unlock Extra Features", expanded=False):
+
+    st.markdown(
+                        """
+                        <div style="margin-left: 0px; margin-top: 20px;">
+                            <a href="https://calendly.com/alexanderoguso/30min" target="_blank">
+                                <div style="background-color:rgb(35, 135, 162); padding: 15px 30px; border-radius: 8px; text-align: center; width: 250px; height: 54px; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                                    <span style="color: white; font-weight: 600; font-size: 16px;">📞 Need more? Book a call</span>
+                                </div>
+                            </a>
+                            <p style="color: #ffffff; font-weight: 600; margin-top: 5px; text-align: center;">Let's chat</p>
+                        </div>
+                        """, unsafe_allow_html=True
+                        )
+    
+    st.markdown(
+                        """<div style="text-align: center; margin-top: 20px;">
+                            <a href="https://buymeacoffee.com/oguso">
+                                <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="width: 150px; height: auto;">
+                            </a>
+                            <p style="color: #ffffff; margin-top: 5px;">Support my work!</p>
+                        </div>
+                        """, unsafe_allow_html=True
+                        )
 # File upload function
 uploaded_file = st.sidebar.file_uploader("Upload a CSV file", type=["csv", "xls", "xlsx"])
 
@@ -210,18 +236,7 @@ if model:
 if st.sidebar.button("End Session"):
     restart_session()
 
-st.sidebar.markdown(
-                    """<div style="text-align: center; margin-top: 20px;">
-                        <a href="https://buymeacoffee.com/oguso">
-                            <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="width: 150px; height: auto;">
-                        </a>
-                        <p style="color: #666; margin-top: 5px;">Support my work!</p>
-                    </div>
-                    """, unsafe_allow_html=True
-                    )
-
-
-
+#Uploaded file logic
 if uploaded_file is not None:
     # Read uploaded file
     file_type = uploaded_file.name.split('.')[-1]
@@ -253,7 +268,7 @@ if uploaded_file is not None:
         data_visualization_section(data)
 
     with tab3:
-        data_querying_section(data, model, DATA_ANALYSIS_PROMPT)
+        data_querying_section(data, model)
 
     with tab4:
         advanced_querying_section(data)
