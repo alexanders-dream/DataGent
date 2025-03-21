@@ -51,7 +51,7 @@ def fetch_available_models(provider, api_endpoint, api_key):
         return None
 
 # Create prompt template
-DATA_ANALYSIS_PROMPT = ChatPromptTemplate.from_template(
+prompt_template = ChatPromptTemplate.from_template(
     "You are a data analysis assistant. Only answer questions related to the uploaded data. "
     "If asked about anything else, respond with: 'I can only answer questions about the uploaded data.' "
 )
@@ -268,7 +268,7 @@ if uploaded_file is not None:
         data_visualization_section(data)
 
     with tab3:
-        data_querying_section(data, model)
+        data_querying_section(data, model, prompt_template)
 
     with tab4:
         advanced_querying_section(data)
