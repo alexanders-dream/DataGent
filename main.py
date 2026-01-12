@@ -4,7 +4,7 @@ import os
 import requests
 import requests.exceptions
 from langchain_groq.chat_models import ChatGroq
-from langchain.prompts import ChatPromptTemplate
+from langchain_core.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
 from data_cleaning import data_cleaning_section
 from data_visualization import data_visualization_section

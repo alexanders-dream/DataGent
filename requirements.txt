@@ -13,3 +13,5 @@ python-dotenv
 openpyxl
 xlrd
 scikit-learn
+langchain-community
+langchain-core
