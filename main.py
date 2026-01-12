@@ -14,7 +14,7 @@ from data_filtering import data_filtering_section
 from sentiment_analysis import sentiment_analysis_section
 from pandasai import Agent
 from langchain_community.chat_models import ChatOllama
-from pandasai_langchain.llm import LangChainLLM
+from pandasai_langchain import LangchainLLM
 import ui_components
 
 st.set_page_config(
@@ -194,10 +194,10 @@ with col2:
 if selected_model:
     if provider == "Groq":
         groq_model = ChatGroq(temperature=0, model_name=selected_model, api_key=st.session_state.api_key)
-        model = LangChainLLM(groq_model)
+        model = LangchainLLM(groq_model)
     else:  # Ollama
         ollama_model = ChatOllama(base_url=api_endpoint, model=selected_model)
-        model = LangChainLLM(ollama_model)
+        model = LangchainLLM(ollama_model)
 else:
     model = None
     st.sidebar.error("Please select a valid model")
