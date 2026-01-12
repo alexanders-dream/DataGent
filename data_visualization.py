@@ -16,7 +16,14 @@ def data_visualization_section(data):
     if plot_type in ["Histogram", "Scatter Plot", "Bar Plot", "Box Plot", "Line Plot"]:
         col1, col2 = st.columns([1, 1])
         with col1:
-             st.info("💡 Tip: You can interact with the plots (zoom, pan) and download them using the camera icon in the toolbar on the exact top right of the chart.")
+             st.markdown(
+                """
+                <div style="background-color: #FFF3CD; color: #856404; padding: 10px; border-radius: 5px; border: 1px solid #FFEEBA; margin-bottom: 15px;">
+                    <strong>💡 Tip:</strong> You can interact with the plots (zoom, pan) and download them using the camera icon in the toolbar on the exact top right of the chart.
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
         with col2:
             if st.checkbox("Group/Color by another column?", key="color_checkbox"):
                 color_col = st.selectbox("Select column for coloring", data.columns, key="color_select")

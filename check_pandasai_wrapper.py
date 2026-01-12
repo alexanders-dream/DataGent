@@ -1,12 +1,8 @@
 
 try:
-    from pandasai.llm import LangChainLLM
-    print("SUCCESS: pandasai.llm.LangChainLLM is importable.")
-except ImportError:
-    try:
-        from pandasai_langchain import LangChainLLM
-        print("SUCCESS: pandasai_langchain.LangChainLLM is importable.")
-    except ImportError as e:
-        print(f"ERROR: Could not import LangChainLLM. {e}")
+    from pandasai_langchain import LangchainLLM
+    print("SUCCESS: pandasai_langchain.LangchainLLM is importable.")
+except ImportError as e:
+    print(f"ERROR: Could not import LangchainLLM. {e}")
 except Exception as e:
     print(f"ERROR: {e}")

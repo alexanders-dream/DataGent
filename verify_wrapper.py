@@ -1,12 +1,12 @@
 
 try:
-    from pandasai_langchain.llm import LangChainLLM
+    from pandasai_langchain import LangchainLLM
     from langchain_community.chat_models import ChatOllama
     
     print("SUCCESS: Dependencies imported.")
     
     ollama_model = ChatOllama(model="llama2")
-    wrapped_model = LangChainLLM(ollama_model)
+    wrapped_model = LangchainLLM(ollama_model)
     
     # Just checking type
     print(f"Wrapped model type: {type(wrapped_model)}")
