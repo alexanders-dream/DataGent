@@ -15,3 +15,4 @@ xlrd
 scikit-learn
 langchain-community
 langchain-core
+pandasai-langchain
