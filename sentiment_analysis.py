@@ -3,8 +3,7 @@ import plotly.graph_objects as go
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import nltk
 import streamlit as st
-import seaborn as sns
-import matplotlib.pyplot as plt
+# removed seaborn and matplotlib imports
 from wordcloud import WordCloud
 import pandas as pd
 import re
@@ -73,66 +72,75 @@ def sentiment_analysis_section(data):
             # After analysis
             st.subheader("Analysis Metrics")
             st.metric("Total Texts Analyzed", len(data))
-            st.metric("Positive Texts", (data['Sentiment_Label'] == 'Positive').sum())
-            st.metric("Negative Texts", (data['Sentiment_Label'] == 'Negative').sum())
-            st.metric("Neutral Texts", (data['Sentiment_Label'] == 'Neutral').sum())
+            c1, c2, c3 = st.columns(3)
+            with c1:
+                st.metric("Positive Texts", (data['Sentiment_Label'] == 'Positive').sum())
+            with c2:
+                st.metric("Negative Texts", (data['Sentiment_Label'] == 'Negative').sum())
+            with c3:
+                st.metric("Neutral Texts", (data['Sentiment_Label'] == 'Neutral').sum())
 
             # Visualizations
             st.markdown("#### Sentiment Distribution")
             
-            # Bar Chart
-            st.markdown("**Bar Chart**")
-            sentiment_counts = data['Sentiment_Label'].value_counts()
-            fig, ax = plt.subplots(figsize=(8, 6))
-            sns.barplot(x=sentiment_counts.index, y=sentiment_counts.values, palette="viridis", ax=ax)
-            ax.set_title("Sentiment Distribution (Bar Chart)")
-            ax.set_xlabel("Sentiment")
-            ax.set_ylabel("Count")
-            st.pyplot(fig)
+            c1, c2 = st.columns(2)
             
-            # Pie Chart
-            st.markdown("**Pie Chart**")
-            sentiment_counts = data['Sentiment_Label'].value_counts()
-            fig = go.Figure(data=[go.Pie(
-                labels=sentiment_counts.index, 
-                values=sentiment_counts.values,
-                hoverinfo='value+percent'  # Move hoverinfo here
-            )])
-            fig.update_layout(
-                title="Sentiment Distribution (Pie Chart)",
-                margin=dict(l=10, r=10, t=30, b=10)
-            )
-            st.plotly_chart(fig, use_container_width=True)
+            with c1:
+                # Bar Chart
+                st.markdown("**Bar Chart**")
+                sentiment_counts = data['Sentiment_Label'].value_counts().reset_index()
+                sentiment_counts.columns = ['Sentiment', 'Count']
+                fig = px.bar(sentiment_counts, x='Sentiment', y='Count', color='Sentiment', 
+                             title="Sentiment Distribution", color_discrete_map={
+                                 'Positive': 'green', 'Negative': 'red', 'Neutral': 'gray'
+                             })
+                st.plotly_chart(fig, use_container_width=True)
+            
+            with c2:
+                # Pie Chart
+                st.markdown("**Pie Chart**")
+                # Recalculate to ensure sync/cleanliness
+                sentiment_counts_pie = data['Sentiment_Label'].value_counts()
+                fig = go.Figure(data=[go.Pie(
+                    labels=sentiment_counts_pie.index, 
+                    values=sentiment_counts_pie.values,
+                    hoverinfo='value+percent',
+                    marker=dict(colors=['green' if x=='Positive' else 'red' if x=='Negative' else 'gray' for x in sentiment_counts_pie.index])
+                )])
+                fig.update_layout(
+                    title="Sentiment Distribution",
+                    margin=dict(l=10, r=10, t=30, b=10)
+                )
+                st.plotly_chart(fig, use_container_width=True)
             
             # Word Clouds
-            st.markdown("**Word Clouds**")
+            st.markdown("#### Word Clouds")
             positive_words = " ".join(data[data['Sentiment_Label'] == 'Positive']['Clean_Text'])
             negative_words = " ".join(data[data['Sentiment_Label'] == 'Negative']['Clean_Text'])
             neutral_words = " ".join(data[data['Sentiment_Label'] == 'Neutral']['Clean_Text'])
             
-            # Create subplots for word clouds
-            fig, axes = plt.subplots(1, 3, figsize=(18, 6))
+            t1, t2, t3 = st.tabs(["Positive Words", "Negative Words", "Neutral Words"])
             
-            # Positive words word cloud
-            positive_wordcloud = WordCloud(width=400, height=300, background_color='white', max_words=100).generate(positive_words)
-            axes[0].imshow(positive_wordcloud, interpolation='bilinear')
-            axes[0].set_title("Positive Words")
-            axes[0].axis('off')
+            with t1:
+                if positive_words.strip():
+                    wc = WordCloud(width=800, height=400, background_color='white', max_words=100).generate(positive_words)
+                    st.image(wc.to_array(), caption="Positive Words", use_column_width=True)
+                else:
+                    st.info("No positive words found.")
             
-            # Negative words word cloud
-            negative_wordcloud = WordCloud(width=400, height=300, background_color='white', max_words=100).generate(negative_words)
-            axes[1].imshow(negative_wordcloud, interpolation='bilinear')
-            axes[1].set_title("Negative Words")
-            axes[1].axis('off')
-            
-            # Neutral words word cloud
-            neutral_wordcloud = WordCloud(width=400, height=300, background_color='white', max_words=100).generate(neutral_words)
-            axes[2].imshow(neutral_wordcloud, interpolation='bilinear')
-            axes[2].set_title("Neutral Words")
-            axes[2].axis('off')
-            
-            plt.tight_layout()
-            st.pyplot(fig)
+            with t2:
+                if negative_words.strip():
+                    wc = WordCloud(width=800, height=400, background_color='white', max_words=100).generate(negative_words)
+                    st.image(wc.to_array(), caption="Negative Words", use_column_width=True)
+                else:
+                    st.info("No negative words found.")
+
+            with t3:
+                if neutral_words.strip():
+                    wc = WordCloud(width=800, height=400, background_color='white', max_words=100).generate(neutral_words)
+                    st.image(wc.to_array(), caption="Neutral Words", use_column_width=True)
+                else:
+                    st.info("No neutral words found.")
             
             # Sentiment Over Time (if a date column exists)
             st.markdown("#### Sentiment Over Time")
@@ -171,12 +179,14 @@ def sentiment_analysis_section(data):
         st.markdown("#### Download Results")
         results = data[[text_column, 'Clean_Text', 'Sentiment', 'Sentiment_Label']]
         results.to_csv("sentiment_analysis.csv", index=False)
-
-        file = open("sentiment_analysis.csv", "rb")
+        
+        # Use open/read/close pattern or better, just pass the string if st.download_button supports it, 
+        # but to match previous logic, we use BytesIO or simple file read.
+        # Actually simplest is to convert to csv string.
+        csv = results.to_csv(index=False).encode('utf-8')
         st.download_button(
             label="Download CSV",
-            data=file,
+            data=csv,
             file_name="sentiment_analysis.csv",
             mime="text/csv",
         )
-        file.close()

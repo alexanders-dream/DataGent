@@ -1,13 +1,9 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 import plotly.express as px
-import io
 
 def data_visualization_section(data):
     st.markdown("### Data Visualization")
-    
     
     plot_type = st.selectbox(
         "Select plot type",
@@ -15,138 +11,115 @@ def data_visualization_section(data):
          "Pie Chart", "Heatmap", "Map (Geospatial)"]
     )
     
+    # Common helper to add "Color by" option
+    color_col = None
+    if plot_type in ["Histogram", "Scatter Plot", "Bar Plot", "Box Plot", "Line Plot"]:
+        col1, col2 = st.columns([1, 1])
+        with col1:
+             st.info("💡 Tip: You can interact with the plots (zoom, pan) and download them using the camera icon in the toolbar on the exact top right of the chart.")
+        with col2:
+            if st.checkbox("Group/Color by another column?", key="color_checkbox"):
+                color_col = st.selectbox("Select column for coloring", data.columns, key="color_select")
+
     if plot_type == "Histogram":
         column = st.selectbox("Select column for histogram", data.columns)
-        plt.figure(figsize=(10, 6))
-        sns.histplot(data[column], kde=True)
-        st.pyplot(plt)
-
-        if st.button("Download Histogram as PNG"):
-            buf = io.BytesIO()
-            plt.savefig(buf, format="png")
-            buf.seek(0)
-            st.download_button(
-                label="Download Histogram",
-                data=buf,
-                file_name="histogram.png",
-                mime="image/png",
-            )
+        try:
+            fig = px.histogram(data, x=column, color=color_col, title=f"Histogram of {column}")
+            st.plotly_chart(fig, use_container_width=True)
+        except Exception as e:
+            st.error(f"Error creating histogram: {e}")
 
     elif plot_type == "Scatter Plot":
-        x_axis = st.selectbox("Select X-axis", data.columns)
-        y_axis = st.selectbox("Select Y-axis", data.columns)
-        plt.figure(figsize=(10, 6))
-        sns.scatterplot(x=data[x_axis], y=data[y_axis])
-        st.pyplot(plt)
-        if st.button("Download Scatter Plot as PNG"):
-            buf = io.BytesIO()
-            plt.savefig(buf, format="png")
-            buf.seek(0)
-            st.download_button(
-                label="Download Scatter Plot",
-                data=buf,
-                file_name="scatter_plot.png",
-                mime="image/png",
-            )
+        c1, c2 = st.columns(2)
+        with c1:
+            x_axis = st.selectbox("Select X-axis", data.columns)
+        with c2:
+            y_axis = st.selectbox("Select Y-axis", data.columns)
+            
+        try:
+            fig = px.scatter(data, x=x_axis, y=y_axis, color=color_col, title=f"Scatter Plot: {x_axis} vs {y_axis}")
+            st.plotly_chart(fig, use_container_width=True)
+        except Exception as e:
+            st.error(f"Error creating scatter plot: {e}")
 
     elif plot_type == "Bar Plot":
-        x_axis = st.selectbox("Select X-axis", data.columns)
-        y_axis = st.selectbox("Select Y-axis", data.columns)
-        plt.figure(figsize=(10, 6))
-        sns.barplot(x=data[x_axis], y=data[y_axis])
-        st.pyplot(plt)
-        if st.button("Download Bar Plot as PNG"):
-            buf = io.BytesIO()
-            plt.savefig(buf, format="png")
-            buf.seek(0)
-            st.download_button(
-                label="Download Bar Plot",
-                data=buf,
-                file_name="bar_plot.png",
-                mime="image/png",
-            )
+        c1, c2 = st.columns(2)
+        with c1:
+            x_axis = st.selectbox("Select X-axis", data.columns)
+        with c2:
+            y_axis = st.selectbox("Select Y-axis", data.columns)
+            
+        try:
+            fig = px.bar(data, x=x_axis, y=y_axis, color=color_col, title=f"Bar Plot: {x_axis} vs {y_axis}")
+            st.plotly_chart(fig, use_container_width=True)
+        except Exception as e:
+            st.error(f"Error creating bar plot: {e}")
 
     elif plot_type == "Box Plot":
         column = st.selectbox("Select column for box plot", data.columns)
-        plt.figure(figsize=(10, 6))
-        sns.boxplot(x=data[column])
-        st.pyplot(plt)
-        if st.button("Download Box Plot as PNG"):
-            buf = io.BytesIO()
-            plt.savefig(buf, format="png")
-            buf.seek(0)
-            st.download_button(
-                label="Download Box Plot",
-                data=buf,
-                file_name="box_plot.png",
-                mime="image/png",
-            )
+        try:
+            # Box plot can be vertical or horizontal. 
+            # If color is provided, it groups by color.
+            # We can also add a y-axis if the user wants to break it down.
+            fig = px.box(data, y=column, color=color_col, title=f"Box Plot of {column}")
+            st.plotly_chart(fig, use_container_width=True)
+        except Exception as e:
+            st.error(f"Error creating box plot: {e}")
 
     elif plot_type == "Line Plot":
-        x_axis = st.selectbox("Select X-axis", data.columns)
-        y_axis = st.selectbox("Select Y-axis", data.columns)
-        fig = px.line(data, x=x_axis, y=y_axis, title="Line Plot")
-        st.plotly_chart(fig)
-        if st.button("Download Line Plot as PNG"):
-            buf = io.BytesIO()
-            fig.write_image(buf, format="png")
-            buf.seek(0)
-            st.download_button(
-                label="Download Line Plot",
-                data=buf,
-                file_name="line_plot.png",
-                mime="image/png",
-            )
+        c1, c2 = st.columns(2)
+        with c1:
+            x_axis = st.selectbox("Select X-axis", data.columns)
+        with c2:
+            y_axis = st.selectbox("Select Y-axis", data.columns)
+            
+        try:
+            fig = px.line(data, x=x_axis, y=y_axis, color=color_col, title=f"Line Plot: {x_axis} vs {y_axis}")
+            st.plotly_chart(fig, use_container_width=True)
+        except Exception as e:
+            st.error(f"Error creating line plot: {e}")
 
     elif plot_type == "Pie Chart":
         column = st.selectbox("Select column for pie chart", data.columns)
-        fig = px.pie(data, names=column, title="Pie Chart")
-        st.plotly_chart(fig)
-        if st.button("Download Pie Chart as PNG"):
-            buf = io.BytesIO()
-            fig.write_image(buf, format="png")
-            buf.seek(0)
-            st.download_button(
-                label="Download Pie Chart",
-                data=buf,
-                file_name="pie_chart.png",
-                mime="image/png",
-            )
+        try:
+            fig = px.pie(data, names=column, title=f"Pie Chart of {column}")
+            st.plotly_chart(fig, use_container_width=True)
+        except Exception as e:
+            st.error(f"Error creating pie chart: {e}")
 
     elif plot_type == "Heatmap":
         numeric_data = data.select_dtypes(include=['float64', 'int64'])
         if not numeric_data.empty:
-            plt.figure(figsize=(10, 6))
-            sns.heatmap(numeric_data.corr(), annot=True, cmap="coolwarm")
-            st.pyplot(plt)
-            if st.button("Download Heatmap as PNG"):
-                buf = io.BytesIO()
-                plt.savefig(buf, format="png")
-                buf.seek(0)
-                st.download_button(
-                    label="Download Heatmap",
-                    data=buf,
-                    file_name="heatmap.png",
-                    mime="image/png",
-                )
+            try:
+                corr_matrix = numeric_data.corr()
+                fig = px.imshow(corr_matrix, text_auto=True, aspect="auto", title="Correlation Heatmap")
+                st.plotly_chart(fig, use_container_width=True)
+            except Exception as e:
+                st.error(f"Error creating heatmap: {e}")
         else:
             st.warning("No numeric columns found for heatmap.")
 
     elif plot_type == "Map (Geospatial)":
-        if st.checkbox("Show geospatial map (requires latitude and longitude columns)"):
-            if "latitude" in data.columns and "longitude" in data.columns:
-                fig = px.scatter_mapbox(data, lat="latitude", lon="longitude", zoom=3)
+        st.markdown("#### Map Configuration")
+        c1, c2 = st.columns(2)
+        
+        # Try to auto-detect lat/lon columns
+        possible_lat = [col for col in data.columns if "lat" in col.lower()]
+        possible_lon = [col for col in data.columns if "lon" in col.lower() or "lng" in col.lower()]
+        
+        default_lat_index = data.columns.get_loc(possible_lat[0]) if possible_lat else 0
+        default_lon_index = data.columns.get_loc(possible_lon[0]) if possible_lon else 0
+
+        with c1:
+            lat_col = st.selectbox("Select Latitude Column", data.columns, index=default_lat_index)
+        with c2:
+            lon_col = st.selectbox("Select Longitude Column", data.columns, index=default_lon_index)
+
+        if st.checkbox("Show Map"):
+            try:
+                fig = px.scatter_mapbox(data, lat=lat_col, lon=lon_col, zoom=3)
                 fig.update_layout(mapbox_style="open-street-map")
-                st.plotly_chart(fig)
-                if st.button("Download Map as PNG"):
-                    buf = io.BytesIO()
-                    fig.write_image(buf, format="png")
-                    buf.seek(0)
-                    st.download_button(
-                        label="Download Map",
-                        data=buf,
-                        file_name="map.png",
-                        mime="image/png",
-                    )
-            else:
-                st.warning("Latitude and Longitude columns are required for geospatial maps.")
+                fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+                st.plotly_chart(fig, use_container_width=True)
+            except Exception as e:
+                st.error(f"Error creating map: {e}")
