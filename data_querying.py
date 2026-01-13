@@ -1,4 +1,3 @@
-```python
 import streamlit as st
 import pandas as pd
 from pandasai import Agent
