@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from pandasai import Agent
+import os
 
 def data_querying_section(data, model, prompt_template):
     st.markdown("### Interactive Data Querying")
