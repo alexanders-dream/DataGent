@@ -15,6 +15,49 @@ def data_querying_section(data, model, prompt_template):
                 result = agent.chat(modified_prompt)
                 st.write(result)
 
+    st.markdown("---")
+    st.markdown("### Automated Data Insights")
+    if st.button("Generate Automated Insights"):
+        with st.spinner("Analyzing data and generating insights..."):
+            # 1. Analyze data structure (columns and dtypes)
+            columns = data.columns.tolist()
+            dtypes = data.dtypes.astype(str).to_dict()
+            
+            # 2. Generate questions using the LLM directly (bypassing agent for this meta-task if possible, or using agent)
+            # We'll use a direct prompt to the agent to suggest questions.
+            meta_prompt = f"""
+            Analyze the following dataset columns and data types:
+            Columns: {columns}
+            Data Types: {dtypes}
+            
+            Generate 3 interesting and analytical questions that a beginner user might ask to understand this data.
+            Return ONLY the questions, one per line, without numbering or bullet points.
+            """
+            
+            try:
+                # We use the agent to generate questions about the data itself
+                questions_response = agent.chat(meta_prompt)
+                
+                # If the response is a dataframe or plot (unlikely but possible), handle it. 
+                # Ideally, it's a string.
+                if isinstance(questions_response, str):
+                    questions = [q.strip() for q in questions_response.split('\n') if q.strip()]
+                    
+                    st.write(f"**Generated Questions:**")
+                    for i, question in enumerate(questions):
+                        st.markdown(f"**{i+1}. {question}**")
+                        with st.spinner(f"Answering: {question}"):
+                            answer = agent.chat(question)
+                            st.write(answer)
+                            if isinstance(answer, pd.DataFrame):
+                                st.dataframe(answer) # Display dataframe if answer is a dataframe
+                            st.divider()
+                else:
+                     st.error("Could not generate questions. Please try again.")
+
+            except Exception as e:
+                st.error(f"An error occurred during automated analysis: {e}")
+
                 # Export Results
                 if isinstance(result, pd.DataFrame):
                     st.markdown("### Export Results")
