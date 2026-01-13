@@ -6,6 +6,9 @@ import os
 def data_querying_section(data, model, prompt_template):
     st.markdown("### Interactive Data Querying")
     
+    # Get the underlying LLM for text generation tasks (not data queries)
+    underlying_llm = model.langchain_llm if hasattr(model, 'langchain_llm') else None
+    
     agent = Agent(data, config={
         "llm": model,
         "enable_cache": False,
@@ -62,24 +65,30 @@ def data_querying_section(data, model, prompt_template):
             columns = data.columns.tolist()
             dtypes = data.dtypes.astype(str).to_dict()
             
-            # 2. Generate questions using the LLM directly
-            meta_prompt = f"""
-            Analyze the following dataset columns and data types:
-            Columns: {columns}
-            Data Types: {dtypes}
-            
-            Generate 3 interesting and analytical questions that a expert user might ask to understand this data.
-            Return ONLY the questions, one per line, without numbering or bullet points.
-            """
+            # 2. Generate questions using the LLM directly (not the PandasAI agent)
+            # PandasAI agent enforces SQL query execution, but generating questions is a text task
+            meta_prompt = f"""Analyze the following dataset columns and data types:
+Columns: {columns}
+Data Types: {dtypes}
+
+Generate 7 interesting and analytical questions that an expert user might ask to understand this data.
+Return ONLY the questions, one per line, without numbering or bullet points."""
             
             try:
-                # We use the agent to generate questions about the data itself
-                questions_response = agent.chat(meta_prompt)
+                # Use the underlying LLM for text generation (question generation)
+                if underlying_llm is not None:
+                    # Use LangChain LLM directly for text generation
+                    questions_response = underlying_llm.invoke(meta_prompt)
+                    # Handle AIMessage or string response
+                    if hasattr(questions_response, 'content'):
+                        questions_response = questions_response.content
+                    else:
+                        questions_response = str(questions_response)
+                else:
+                    # Fallback: try using model directly if it has an invoke method
+                    st.warning("Could not access underlying LLM. Using fallback method.")
+                    questions_response = str(model.invoke(meta_prompt) if hasattr(model, 'invoke') else "")
                 
-                # Ensure we handle different return types
-                if not isinstance(questions_response, str):
-                    questions_response = str(questions_response)
-
                 questions = [q.strip() for q in questions_response.split('\n') if q.strip()]
                 
                 if questions:
@@ -87,6 +96,7 @@ def data_querying_section(data, model, prompt_template):
                     for i, question in enumerate(questions):
                         st.markdown(f"**{i+1}. {question}**")
                         with st.spinner(f"Answering: {question}"):
+                            # Use PandasAI agent for actual data queries
                             answer = agent.chat(question)
                             
                             # Handle answer
