@@ -2,6 +2,82 @@ import streamlit as st
 import pandas as pd
 from pandasai import Agent
 import os
+import re
+
+def display_pandasai_result(result):
+    """
+    Helper function to properly display PandasAI results, 
+    including chart images on Streamlit Cloud.
+    Returns True if an image was displayed, False otherwise.
+    """
+    if result is None:
+        return False
+    
+    # If result is already a DataFrame, display it
+    if isinstance(result, pd.DataFrame):
+        st.dataframe(result)
+        return True
+    
+    # Convert to string for processing
+    result_str = str(result).strip().strip("'").strip('"')
+    
+    # Check if the result looks like an image path
+    image_extensions = ('.png', '.jpg', '.jpeg', '.gif', '.svg')
+    
+    # Pattern to find image paths in the result (may be embedded in text)
+    image_path_pattern = r'["\']?([^"\'<>\s]*(?:exports[/\\]charts[/\\][^"\'<>\s]+|temp_chart[^"\'<>\s]+)\.(?:png|jpg|jpeg|gif))["\']?'
+    
+    # First, check if the whole result is an image path
+    if result_str.lower().endswith(image_extensions):
+        paths_to_try = [
+            result_str,  # As-is
+            os.path.abspath(result_str),  # Absolute path
+            os.path.join(os.getcwd(), result_str),  # Relative to cwd
+        ]
+        
+        for path in paths_to_try:
+            if os.path.isfile(path):
+                try:
+                    st.image(path)
+                    return True
+                except Exception as e:
+                    st.warning(f"Found image but couldn't display: {e}")
+                    continue
+    
+    # Try to find image path embedded in text
+    matches = re.findall(image_path_pattern, result_str, re.IGNORECASE)
+    for match in matches:
+        paths_to_try = [
+            match,
+            os.path.abspath(match),
+            os.path.join(os.getcwd(), match),
+            match.replace('\\', '/'),  # Handle Windows paths
+            match.replace('/', '\\'),  # Handle Linux paths
+        ]
+        
+        for path in paths_to_try:
+            if os.path.isfile(path):
+                try:
+                    st.image(path)
+                    return True
+                except Exception:
+                    continue
+    
+    # If no image found but result contains a chart path reference, try direct display
+    if 'exports/charts' in result_str or 'temp_chart' in result_str:
+        # Extract what looks like a path
+        potential_paths = result_str.split()
+        for p in potential_paths:
+            p = p.strip("'\"")
+            if 'chart' in p.lower() and p.lower().endswith(image_extensions):
+                if os.path.isfile(p):
+                    try:
+                        st.image(p)
+                        return True
+                    except Exception:
+                        pass
+    
+    return False
 
 def data_querying_section(data, model, prompt_template):
     st.markdown("### Interactive Data Querying")
@@ -26,14 +102,9 @@ def data_querying_section(data, model, prompt_template):
                 modified_prompt = f"Only answer questions related to the provided data. If the question is not about the data, respond with 'Please ask a question related to the data.' Here's the question: {prompt}"
                 result = agent.chat(modified_prompt)
                 
-                # Check if result is an image path
-                if isinstance(result, str):
-                    clean_result = result.strip().strip("'").strip('"')
-                    if os.path.isfile(clean_result) and (clean_result.lower().endswith(('.png', '.jpg', '.jpeg'))):
-                        st.image(clean_result)
-                    else:
-                        st.write(result)
-                else:
+                # Use helper to display result (handles images, DataFrames, and text)
+                if not display_pandasai_result(result):
+                    # Fallback to simple write if helper didn't display anything
                     st.write(result)
 
                 # Export Results
@@ -99,19 +170,9 @@ Return ONLY the questions, one per line, without numbering or bullet points."""
                             # Use PandasAI agent for actual data queries
                             answer = agent.chat(question)
                             
-                            # Handle answer
-                            answered = False
-                            if isinstance(answer, str):
-                                clean_answer = answer.strip().strip("'").strip('"')
-                                if os.path.isfile(clean_answer) and (clean_answer.lower().endswith(('.png', '.jpg', '.jpeg'))):
-                                    st.image(clean_answer)
-                                    answered = True
-                            
-                            if not answered:
-                                if isinstance(answer, pd.DataFrame):
-                                    st.dataframe(answer)
-                                else:
-                                    st.write(answer)
+                            # Use helper to display result (handles images, DataFrames, and text)
+                            if not display_pandasai_result(answer):
+                                st.write(answer)
                             
                             st.divider()
                 else:
