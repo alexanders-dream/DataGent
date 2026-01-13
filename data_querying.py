@@ -3,6 +3,8 @@ import pandas as pd
 from pandasai import Agent
 import os
 import re
+import json
+import plotly.express as px
 
 def display_pandasai_result(result):
     """
@@ -180,3 +182,77 @@ Return ONLY the questions, one per line, without numbering or bullet points."""
 
             except Exception as e:
                 st.error(f"An error occurred during automated analysis: {e}")
+
+    st.markdown("---")
+    st.markdown("### Automated Visualizations")
+    if st.button("Generate Automated Visualizations"):
+        with st.spinner("Analyzing data and generating visualizations..."):
+            # 1. Analyze data structure
+            columns = data.columns.tolist()
+            dtypes = data.dtypes.astype(str).to_dict()
+            
+            # 2. Get suggestions from LLM
+            viz_prompt = f"""Analyze the following dataset columns and data types:
+Columns: {columns}
+Data Types: {dtypes}
+
+Suggest 3 most relevant and insightful visualizations for this dataset using Plotly Express.
+Return the response strictly as a VALID JSON list of objects. Do not wrap the JSON in markdown code blocks.
+Each object should have:
+- "title": string (title of the chart)
+- "type": string (one of: "scatter", "bar", "line", "histogram", "box", "pie")
+- "x": string (column name for x-axis)
+- "y": string (column name for y-axis, optional for histogram/pie)
+- "color": string (column name for color grouping, optional)
+- "description": string (explanation of why this visualization is interesting)
+"""
+            try:
+                # Use underlying LLM or fallback
+                response_text = ""
+                if underlying_llm is not None:
+                    response = underlying_llm.invoke(viz_prompt)
+                    response_text = response.content if hasattr(response, 'content') else str(response)
+                else:
+                    response_text = str(model.invoke(viz_prompt) if hasattr(model, 'invoke') else "")
+
+                # Clean response to ensure JSON parsing works
+                response_text = response_text.strip()
+                # Remove markdown code blocks if present
+                if "```json" in response_text:
+                    response_text = response_text.split("```json")[1].split("```")[0].strip()
+                elif "```" in response_text:
+                    response_text = response_text.split("```")[1].split("```")[0].strip()
+                    
+                suggestions = json.loads(response_text)
+                
+                for i, viz in enumerate(suggestions):
+                    st.write(f"**{i+1}. {viz['title']}**")
+                    st.caption(viz['description'])
+                    
+                    try:
+                        fig = None
+                        if viz['type'] == 'scatter':
+                            fig = px.scatter(data, x=viz['x'], y=viz.get('y'), color=viz.get('color'))
+                        elif viz['type'] == 'bar':
+                            fig = px.bar(data, x=viz['x'], y=viz.get('y'), color=viz.get('color'))
+                        elif viz['type'] == 'line':
+                            fig = px.line(data, x=viz['x'], y=viz.get('y'), color=viz.get('color'))
+                        elif viz['type'] == 'histogram':
+                            fig = px.histogram(data, x=viz['x'], color=viz.get('color'))
+                        elif viz['type'] == 'box':
+                            fig = px.box(data, x=viz['x'], y=viz.get('y'), color=viz.get('color'))
+                        elif viz['type'] == 'pie':
+                            fig = px.pie(data, names=viz['x'], values=viz.get('y'))
+                        
+                        if fig:
+                            st.plotly_chart(fig, use_container_width=True)
+                        else:
+                            st.warning(f"Unsupported chart type: {viz['type']}")
+                            
+                    except Exception as plot_error:
+                        st.warning(f"Could not create chart '{viz['title']}': {plot_error}")
+                    
+                    st.divider()
+                        
+            except Exception as e:
+                st.error(f"Failed to generate visualizations: {e}")
