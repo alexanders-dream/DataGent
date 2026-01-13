@@ -16,8 +16,12 @@ def data_querying_section(data, model, prompt_template):
                 result = agent.chat(modified_prompt)
                 
                 # Check if result is an image path
-                if isinstance(result, str) and (result.endswith('.png') or result.endswith('.jpg') or result.endswith('.jpeg')):
-                    st.image(result)
+                if isinstance(result, str):
+                    clean_result = result.strip().strip("'").strip('"')
+                    if os.path.isfile(clean_result) and (clean_result.lower().endswith(('.png', '.jpg', '.jpeg'))):
+                        st.image(clean_result)
+                    else:
+                        st.write(result)
                 else:
                     st.write(result)
 
@@ -77,15 +81,19 @@ def data_querying_section(data, model, prompt_template):
                         with st.spinner(f"Answering: {question}"):
                             answer = agent.chat(question)
                             
-                            # Handle image response
-                            if isinstance(answer, str) and (answer.endswith('.png') or answer.endswith('.jpg') or answer.endswith('.jpeg')):
-                                st.image(answer)
-                            # Handle dataframe response
-                            elif isinstance(answer, pd.DataFrame):
-                                st.dataframe(answer)
-                            # Handle text/other response
-                            else:
-                                st.write(answer)
+                            # Handle answer
+                            answered = False
+                            if isinstance(answer, str):
+                                clean_answer = answer.strip().strip("'").strip('"')
+                                if os.path.isfile(clean_answer) and (clean_answer.lower().endswith(('.png', '.jpg', '.jpeg'))):
+                                    st.image(clean_answer)
+                                    answered = True
+                            
+                            if not answered:
+                                if isinstance(answer, pd.DataFrame):
+                                    st.dataframe(answer)
+                                else:
+                                    st.write(answer)
                             
                             st.divider()
                 else:
