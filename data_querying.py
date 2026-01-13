@@ -6,7 +6,15 @@ import os
 def data_querying_section(data, model, prompt_template):
     st.markdown("### Interactive Data Querying")
     
-    agent = Agent(data, config={"llm": model})
+    agent = Agent(data, config={
+        "llm": model,
+        "enable_cache": False,
+        "enforce_privacy": False,
+        "save_charts": True,
+        "save_charts_path": "exports/charts",
+        "verbose": False
+    })
+
     prompt = st.text_input("Enter your data-related question:")
     
     if st.button("Generate"):
