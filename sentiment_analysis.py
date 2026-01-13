@@ -124,21 +124,21 @@ def sentiment_analysis_section(data):
             with t1:
                 if positive_words.strip():
                     wc = WordCloud(width=800, height=400, background_color='white', max_words=100).generate(positive_words)
-                    st.image(wc.to_array(), caption="Positive Words", use_column_width=True)
+                    st.image(wc.to_image(), caption="Positive Words", use_column_width=True)
                 else:
                     st.info("No positive words found.")
             
             with t2:
                 if negative_words.strip():
                     wc = WordCloud(width=800, height=400, background_color='white', max_words=100).generate(negative_words)
-                    st.image(wc.to_array(), caption="Negative Words", use_column_width=True)
+                    st.image(wc.to_image(), caption="Negative Words", use_column_width=True)
                 else:
                     st.info("No negative words found.")
 
             with t3:
                 if neutral_words.strip():
                     wc = WordCloud(width=800, height=400, background_color='white', max_words=100).generate(neutral_words)
-                    st.image(wc.to_array(), caption="Neutral Words", use_column_width=True)
+                    st.image(wc.to_image(), caption="Neutral Words", use_column_width=True)
                 else:
                     st.info("No neutral words found.")
             
