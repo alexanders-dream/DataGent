@@ -196,7 +196,7 @@ Return ONLY the questions, one per line, without numbering or bullet points."""
 Columns: {columns}
 Data Types: {dtypes}
 
-Suggest 3 most relevant and insightful visualizations for this dataset using Plotly Express.
+Suggest 5 most relevant and insightful visualizations for this dataset using Plotly Express.
 Return the response strictly as a VALID JSON list of objects. Do not wrap the JSON in markdown code blocks.
 Each object should have:
 - "title": string (title of the chart)
