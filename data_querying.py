@@ -101,24 +101,3 @@ def data_querying_section(data, model, prompt_template):
 
             except Exception as e:
                 st.error(f"An error occurred during automated analysis: {e}")
-
-                # Export Results
-                if isinstance(result, pd.DataFrame):
-                    st.markdown("### Export Results")
-                    export_format = st.selectbox("Select export format", ["CSV", "Excel"])
-                    if export_format == "CSV":
-                        csv = result.to_csv(index=False)
-                        st.download_button(
-                            label="Download CSV",
-                            data=csv,
-                            file_name='result.csv',
-                            mime='text/csv',
-                        )
-                    elif export_format == "Excel":
-                        excel = result.to_excel(index=False)
-                        st.download_button(
-                            label="Download Excel",
-                            data=excel,
-                            file_name='result.xlsx',
-                            mime='application/vnd.ms-excel',
-                        )

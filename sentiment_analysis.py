@@ -94,7 +94,7 @@ def sentiment_analysis_section(data):
                              title="Sentiment Distribution", color_discrete_map={
                                  'Positive': 'green', 'Negative': 'red', 'Neutral': 'gray'
                              })
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, width='stretch')
             
             with c2:
                 # Pie Chart
@@ -111,7 +111,7 @@ def sentiment_analysis_section(data):
                     title="Sentiment Distribution",
                     margin=dict(l=10, r=10, t=30, b=10)
                 )
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, width='stretch')
             
             # Word Clouds
             st.markdown("#### Word Clouds")
@@ -169,7 +169,7 @@ def sentiment_analysis_section(data):
                         hovermode='x unified',
                         margin=dict(l=10, r=10, t=30, b=10)
                     )
-                    st.plotly_chart(fig, use_container_width=True)
+                    st.plotly_chart(fig, width='stretch')
             
         else:
             st.warning("Selected column does not contain text data.")

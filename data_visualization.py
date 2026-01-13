@@ -32,7 +32,7 @@ def data_visualization_section(data):
         column = st.selectbox("Select column for histogram", data.columns)
         try:
             fig = px.histogram(data, x=column, color=color_col, title=f"Histogram of {column}")
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
         except Exception as e:
             st.error(f"Error creating histogram: {e}")
 
@@ -45,7 +45,7 @@ def data_visualization_section(data):
             
         try:
             fig = px.scatter(data, x=x_axis, y=y_axis, color=color_col, title=f"Scatter Plot: {x_axis} vs {y_axis}")
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
         except Exception as e:
             st.error(f"Error creating scatter plot: {e}")
 
@@ -58,7 +58,7 @@ def data_visualization_section(data):
             
         try:
             fig = px.bar(data, x=x_axis, y=y_axis, color=color_col, title=f"Bar Plot: {x_axis} vs {y_axis}")
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
         except Exception as e:
             st.error(f"Error creating bar plot: {e}")
 
@@ -69,7 +69,7 @@ def data_visualization_section(data):
             # If color is provided, it groups by color.
             # We can also add a y-axis if the user wants to break it down.
             fig = px.box(data, y=column, color=color_col, title=f"Box Plot of {column}")
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
         except Exception as e:
             st.error(f"Error creating box plot: {e}")
 
@@ -82,7 +82,7 @@ def data_visualization_section(data):
             
         try:
             fig = px.line(data, x=x_axis, y=y_axis, color=color_col, title=f"Line Plot: {x_axis} vs {y_axis}")
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
         except Exception as e:
             st.error(f"Error creating line plot: {e}")
 
@@ -90,7 +90,7 @@ def data_visualization_section(data):
         column = st.selectbox("Select column for pie chart", data.columns)
         try:
             fig = px.pie(data, names=column, title=f"Pie Chart of {column}")
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
         except Exception as e:
             st.error(f"Error creating pie chart: {e}")
 
@@ -100,7 +100,7 @@ def data_visualization_section(data):
             try:
                 corr_matrix = numeric_data.corr()
                 fig = px.imshow(corr_matrix, text_auto=True, aspect="auto", title="Correlation Heatmap")
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, width='stretch')
             except Exception as e:
                 st.error(f"Error creating heatmap: {e}")
         else:
@@ -127,6 +127,6 @@ def data_visualization_section(data):
                 fig = px.scatter_mapbox(data, lat=lat_col, lon=lon_col, zoom=3)
                 fig.update_layout(mapbox_style="open-street-map")
                 fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, width='stretch')
             except Exception as e:
                 st.error(f"Error creating map: {e}")
