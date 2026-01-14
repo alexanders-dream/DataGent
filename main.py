@@ -213,6 +213,17 @@ if st.sidebar.button("End Session"):
 
 #Uploaded file logic
 if uploaded_file is not None:
+    # Check if a new file has been uploaded (reset session state)
+    if 'current_file_name' not in st.session_state or st.session_state.current_file_name != uploaded_file.name:
+        # New file uploaded - reset all cleaning-related session state
+        st.session_state.current_file_name = uploaded_file.name
+        if 'cleaning_history' in st.session_state:
+            del st.session_state.cleaning_history
+        if 'original_data' in st.session_state:
+            del st.session_state.original_data
+        if 'cleaned_data' in st.session_state:
+            del st.session_state.cleaned_data
+    
     # Read uploaded file
     file_type = uploaded_file.name.split('.')[-1]
     
