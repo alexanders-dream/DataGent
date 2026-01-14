@@ -1,5 +1,4 @@
 import streamlit as st
-from st_paywall import add_auth
 import pandas as pd
 import os
 import requests
@@ -23,9 +22,6 @@ st.set_page_config(
     page_title="DataGent",
     page_icon="images/icon.png"
 )
-
-# Add authentication and subscription check
-add_auth(required=True)
 
 def fetch_available_models(provider, api_endpoint, api_key):
     """Fetch available models from the selected provider's API endpoint"""

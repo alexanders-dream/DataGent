@@ -16,6 +16,5 @@ scikit-learn
 langchain-community
 langchain-core
 pandasai-langchain
-st-paywall
 numpy
 scipy
