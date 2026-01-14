@@ -1,4 +1,5 @@
 import streamlit as st
+from st_paywall import add_auth
 import pandas as pd
 import os
 import requests
@@ -12,6 +13,7 @@ from data_querying import data_querying_section
 from advanced_querying import advanced_querying_section
 from data_filtering import data_filtering_section
 from sentiment_analysis import sentiment_analysis_section
+from data_profiling import data_profiling_dashboard
 from pandasai import Agent
 from langchain_community.chat_models import ChatOllama
 from pandasai_langchain import LangchainLLM
@@ -21,6 +23,9 @@ st.set_page_config(
     page_title="DataGent",
     page_icon="images/icon.png"
 )
+
+# Add authentication and subscription check
+add_auth(required=True)
 
 def fetch_available_models(provider, api_endpoint, api_key):
     """Fetch available models from the selected provider's API endpoint"""
@@ -229,6 +234,10 @@ if uploaded_file is not None:
     # Data Preview
     st.subheader("Data Preview")
     st.write(data.head())
+    
+    # Data Profiling Dashboard
+    with st.expander("📊 View Data Profiling Dashboard", expanded=False):
+        data_profiling_dashboard(data)
 
     # Create tabs for different sections
     tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Data Cleaning", "Data Visualization", 
