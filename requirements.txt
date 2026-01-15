@@ -18,3 +18,4 @@ langchain-core
 pandasai-langchain
 numpy
 scipy
+st-paywall
