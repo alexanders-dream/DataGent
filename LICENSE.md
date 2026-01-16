@@ -183,9 +183,9 @@ Any disputes shall be resolved through:
 
 For licensing inquiries, support, or questions:
 
-**Email**: [your-email@domain.com]  
-**Website**: [your-website.com]  
-**Business Address**: [Your Business Address]
+**Email**: [oguso@datagent.co.ke]  
+**Website**: [www.datagent.co.ke]  
+
 
 ---
 

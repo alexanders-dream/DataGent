@@ -4,88 +4,117 @@ You can demo the app here: [DataGent Demo](https://datagent.streamlit.app)
 
 # DataGent - AI-Powered Data Analysis Assistant
 
-DataGent is an intelligent data analysis application powered by AI models. It provides a user-friendly interface for performing various data analysis tasks on CSV and Excel files, including data cleaning, visualization, querying, filtering, and sentiment analysis.
+DataGent is an intelligent data analysis application powered by AI models. It provides a user-friendly interface for performing various data analysis tasks on CSV and Excel files, including advanced data cleaning, detailed profiling, visualization, natural language querying, and sentiment analysis.
 
 ## Features
 
-- **Data Cleaning**: Identify and handle missing values, duplicates, and inconsistencies
-- **Data Visualization**: Create interactive charts and graphs
-- **Data Querying**: Ask natural language questions about your data
-- **Advanced Querying**: Perform complex data analysis with AI assistance
-- **Interactive Filtering**: Filter and explore data interactively
-- **Sentiment Analysis**: Analyze text data for sentiment (if applicable)
+### 🧹 Advanced Data Cleaning
+- **Missing Values Management**: 
+    - Detailed summary of missing data.
+    - Strategies: Global fill (mean/median/mode), column-specific methods, forward/backward fill, linear/polynomial interpolation, and threshold-based dropping.
+- **Duplicate Handling**: 
+    - Detection based on all or specific columns.
+    - Options to keep first, last, or remove all duplicates.
+- **Outlier Detection & Handling**:
+    - Methods: IQR (Interquartile Range) and Z-Score.
+    - Interactive visualization of outliers.
+    - Handling: Remove, cap at boundaries, log transform, or ignore.
+- **Data Type Optimization**:
+    - Automatic memory optimization (downcasting numerics, categorizing objects).
+    - Manual type conversion and date parsing.
+- **Data Validation**:
+    - Range validation, regex pattern matching, unique value constraints, and cross-column validation.
 
+### 📊 Data Profiling Dashboard
+- **Quality Report**: Comprehensive metrics including missing %, unique values, memory usage, and quality inference.
+- **Visual Analysis**: Missing values heatmap, distribution plots (histograms/box plots), and correlation matrices.
+- **Detailed Statistics**: Deep dive into specific column statistics (skewness, kurtosis, etc.).
+
+### 🤖 AI-Powered Analysis
+- **Interactive Querying**: Ask natural language questions about your data using local (Ollama) or cloud (Groq) LLMs.
+- **Automated Insights**: AI generates and answers analytical questions about your dataset automatically.
+- **Automated Visualizations**: AI suggests and generates relevant Plotly charts based on your data structure.
+
+### 📈 Data Visualization
+- **Interactive Charts**:
+    - Histograms, Scatter Plots, Bar Plots, Box Plots.
+    - Line Plots, Pie Charts, Heatmaps.
+    - Geospatial Maps (scatter mapbox).
+- **Customization**: Group/color by specific columns for deeper insights.
+
+### 🔎 Interactive Filtering
+- Dynamic filtering widgets for text (multiselect) and numeric (range sliders) columns.
+
+### 🎭 Sentiment Analysis
+- **Text Analysis**: VADER-based sentiment scoring (Positive, Negative, Neutral).
+- **Visualizations**: Sentiment distribution bars/pies, Word Clouds for each sentiment category.
+- **Time Series**: Track sentiment trends over time (if date column exists).
 
 ## Configuration
 
 ### AI Models
 DataGent supports two types of AI models:
-1. **Groq (Cloud)**: Requires a GROQ_API_KEY in the .env file
-2. **LocalLLM**: Requires a local Ollama server running with the qwen2.5-coder model or any other open-source model of your choice
 
-To use open-source models from Groq:
-1. Visit https://console.groq.com/keys and generate an API key
-2. Copy the generated API key. (You'll need it later)
-
-To use the local model:
-1. Install Ollama: https://ollama.com/
-2. Pull the model:
-   ```bash
-   ollama pull qwen2.5-coder
-   ```
-3. Start the Ollama server:
-   ```bash
-   ollama serve
-   ```
+1. **Groq (Cloud)**: Fast, high-performance inference.
+   - Requires a `GROQ_API_KEY`.
+   - Get one at [console.groq.com](https://console.groq.com/keys).
+   
+2. **LocalLLM (Ollama)**: Privacy-focused, runs locally.
+   - Install Ollama from [ollama.com](https://ollama.com/).
+   - Pull a model (e.g., `qwen2.5-coder`):
+     ```bash
+     ollama pull qwen2.5-coder
+     ```
+   - Start the server: `ollama serve`
 
 ## Installation
 
-1. Clone the repository:
+1. **Clone the repository**:
    ```bash
    git clone https://github.com/alexanders-dream/DataGent.git
    cd datagent
    ```
 
-2. Create a virtual environment:
+2. **Create a virtual environment**:
    ```bash
    python -m venv venv
-   source venv/bin/activate  # On Windows use: venv\Scripts\activate
+   # Windows:
+   venv\Scripts\activate
+   # Mac/Linux:
+   source venv/bin/activate
    ```
 
-3. Install dependencies:
+3. **Install dependencies**:
    ```bash
    pip install -r requirements.txt
    ```
    
-4. Run the application:
+4. **Run the application**:
    ```bash
    streamlit run main.py
    ```
 
 ## Usage
 
-1. Start the application by running `streamlit run main.py`
-2. Upload a CSV file using the sidebar
-3. Explore the different tabs for various data analysis features:
-   - **Data Cleaning**: Clean and preprocess your data
-   - **Data Visualization**: Create visualizations of your data
-   - **Data Querying with AI**: Ask natural language questions about your data
-   - **Advanced Querying**: Perform complex data analysis
-   - **Interactive Data Filtering**: Filter and explore your data
-   - **Sentiment Analysis**: Analyze text data for sentiment (if applicable)
-
-4. Use the sidebar to:
-   - Choose between Cloud (ChatGroq) or Local AI models
-   - End the current session
-   - View information about the current AI model
+1. **Start the App**: Run `streamlit run main.py`.
+2. **Upload Data**: Use the sidebar to upload a CSV or Excel file.
+3. **Configure AI**: Select 'Groq' (enter key) or 'Ollama' (ensure local server is running) in the sidebar.
+4. **Explore Tabs**:
+    - **Data Cleaning**: Fix issues in your dataset step-by-step.
+    - **Data Visualization**: create custom plots.
+    - **Data Querying with AI**: Chat with your data or generate auto-insights.
+    - **Advanced Querying**: Run pandas query strings.
+    - **Interactive Data Filtering**: Slice and dice the data.
+    - **Sentiment Analysis**: Analyze text columns.
 
 ## Requirements
 
-- Python 3.10
+- Python 3.10+
 - Streamlit
-- Pandas
-- LangChain
-- PandasAI
+- Pandas & PandasAI
+- LangChain (Community & Groq)
+- Plotly Express
+- NLTK & WordCloud
 - python-dotenv
 
 ## Contributing
@@ -94,5 +123,4 @@ Contributions are welcome! Please open an issue or submit a pull request for any
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
-
+This project is licensed under the MIT License - see the [LICENSE](LICENSE.md) file for details.
