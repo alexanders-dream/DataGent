@@ -90,7 +90,7 @@ def data_querying_section(data, model, prompt_template):
     agent = Agent(data, config={
         "llm": model,
         "enable_cache": False,
-        "enforce_privacy": False,
+        "enforce_privacy": True,
         "save_charts": True,
         "save_charts_path": "exports/charts",
         "verbose": False
